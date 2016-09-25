@@ -1,9 +1,16 @@
 from collections import Counter, namedtuple, defaultdict
+from itertools import groupby
+import pprint
 
 # everything uses lowercase
 
 ALPHAS = "abcdefghijklmnopqrstuvwxyz"
 MAX_LENGTH = 80
+MAX_KEY_LENGTH = 20
+TOP_DEPTH = 6
+MIN_WORD_HITS = 5
+
+COMMON_WORDS = ['be', 'am', 'is', 'were', 'to', 'of', 'and', 'in', 'that', 'have']
 
 cipher1 = "entehbitgqiesfkgzfgktlxwktubektbwktqerrffnubitnbekttnbtkbitkeerfgfaeswbtvtnbstrfnwggxaaegtubetnbtkfukfzwnvkeeruebitzfgktqtwctufbbitueekydfnebitkgqiesfkfnuqenuxqbtuhkerytnqibeytnqixnbwsitifuyttnwnbkeuxqtubefssbitdexnvsfuwtgfnuvtnbstrtnwnbitkeeruebswnqesnztnbbikexvibitekutfsqexnbstggbwrtguebwhitbeejfgtkwexgcwtzehbitatkhekrfnqtwbrxgbifctaxbiwrbetplxwgwbtbekbxktqerrfhekitzfgqengqwexgbifbitzfgnebfatkhtqbbdatehrfnsdytfxbd"
 
@@ -128,7 +135,7 @@ class Freqeuncies():
 
 def is_candidate(string):
     freq = Freqeuncies(string)
-    top5 = freq.top(4)
+    top5 = freq.top(TOP_DEPTH)
     return "e" in top5 and ("a" in top5 or "t" in top5)
 
 
@@ -146,7 +153,7 @@ ShiftStat = namedtuple("ShiftStat", ["shift", "keylen", "pos"])
 def vignerecycle(string):
     candidates = []
 
-    for keylen in range(1, 12): # round(len(string)/5)):
+    for keylen in range(1, MAX_KEY_LENGTH): # round(len(string)/5)):
         # print(keylen)
         for pos in range(0, keylen):
             for shift in range(1, 27):
@@ -173,6 +180,86 @@ def group_vignere(string):
 def num_pos(sss):
     uniqe_pos = set(ss.pos for ss in sss)
     return len(uniqe_pos)
+
+#todo: from looking groups, see if, when combining them, they make good candidates
+
+
+def find_keylen_worlds(string):
+    groups = group_vignere(string)
+    worlds = {}
+    for keylen, sss in groups.items():
+        bypos = {i:[] for i in range(keylen)}
+        for ss in sss:
+            bypos[ss.pos].append(ss)
+        for pos,sss in bypos.items():
+            if len(sss) == 0:
+                for shift in range(1,27): # Try all the cases for this one
+                    sss.append(ShiftStat(shift, keylen, pos))
+        worlds[keylen] = bypos
+    return worlds
+
+def find_candidates(string):
+    worlds = find_keylen_worlds(string)
+    candidates = []
+
+    for keylen, bypos in worlds.items():
+        xlists = [[]]
+        for i in range(keylen):
+            xlists = cross_multiply(xlists, bypos[i])
+        for sslst in xlists:
+            cr = Cryptext(string)
+            for ss in sslst:
+                cr = cr.shift(*ss)
+            if is_candidate(str(cr)):
+                candidates.append((sslst, str(cr)))
+    return candidates
+
+def print_candidates(candidates):
+    for sslist, string in candidates:
+        print("Key: '{}'".format(sss_to_key(sslist)))
+        print(string)
+        print()
+
+def sss_to_key(sslist):
+    return "".join(str(Char(num=ss.shift)) for ss in sslist)
+
+
+def narrow_by_words(candidates):
+    narrowed = []
+    for key, string in candidates:
+        hits = count_hits(string, COMMON_WORDS)
+        if hits > MIN_WORD_HITS and 'the' in string:
+            narrowed.append((key,string))
+    return narrowed
+
+def count_hits(string, words):
+    return sum(string.count(w) for w in words)
+
+def cross_multiply(nested_lst, lst):
+    cross_lists = []
+    for l in nested_lst:
+        for e in lst:
+            lnew = l[:]
+            lnew.append(e)
+            cross_lists.append(lnew)
+    return cross_lists
+
+
+def find_vignere_candidates(string):
+    cands = find_candidates(string)
+    cands = narrow_by_words(cands)
+    return cands
+
+
+
+
+
+
+
+
+
+
+
 
 
 
