@@ -1,10 +1,15 @@
 import cryptoanalysis as crypt
 from multiprocessing import Pool
 
-STRING = crypt.cipher1
+STRING = crypt.cipher1[:150]
 
 def find_candidates_par(string):
+    print("Finding worlds", flush=True)
     worlds = crypt.find_keylen_worlds(STRING)
+
+    print("Found {n} worlds".format(n=len(worlds), flush=True))
+    print("Pooling make_candidates_par")
+
     with Pool() as pool:
         candidate_lists = pool.map(make_candidates_par, worlds.items())
     return [c for clist in candidate_lists for c in clist]
@@ -25,6 +30,10 @@ def make_candidates_par(kb):
 
 def find_vignere_candidates_par(string):
     cands = find_candidates_par(string)
+
+    print("{} Candidates found".format(len(cands)), flush=True)
+    print("Narrowing by words", flush=True)
+
     cands = crypt.narrow_by_words(cands)
     return cands
 

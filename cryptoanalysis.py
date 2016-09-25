@@ -8,9 +8,9 @@ ALPHAS = "abcdefghijklmnopqrstuvwxyz"
 MAX_LENGTH = 80
 MAX_KEY_LENGTH = 12
 TOP_DEPTH = 5
-MIN_WORD_HITS = 5
+MIN_WORD_HITS = 3
 
-COMMON_WORDS = ['be', 'am', 'is', 'were', 'to', 'of', 'and', 'in', 'that', 'have']
+COMMON_WORDS = ['the', 'be', 'am', 'is', 'were', 'to', 'of', 'and', 'in', 'that', 'have']
 
 cipher1 = "entehbitgqiesfkgzfgktlxwktubektbwktqerrffnubitnbekttnbtkbitkeerfgfaeswbtvtnbstrfnwggxaaegtubetnbtkfukfzwnvkeeruebitzfgktqtwctufbbitueekydfnebitkgqiesfkfnuqenuxqbtuhkerytnqibeytnqixnbwsitifuyttnwnbkeuxqtubefssbitdexnvsfuwtgfnuvtnbstrtnwnbitkeeruebswnqesnztnbbikexvibitekutfsqexnbstggbwrtguebwhitbeejfgtkwexgcwtzehbitatkhekrfnqtwbrxgbifctaxbiwrbetplxwgwbtbekbxktqerrfhekitzfgqengqwexgbifbitzfgnebfatkhtqbbdatehrfnsdytfxbd"
 
@@ -208,7 +208,7 @@ def narrow_by_words(candidates):
     narrowed = []
     for key, string in candidates:
         hits = count_hits(string, COMMON_WORDS)
-        if hits > MIN_WORD_HITS and 'the' in string:
+        if hits > MIN_WORD_HITS:
             narrowed.append((key,string))
     return narrowed
 
