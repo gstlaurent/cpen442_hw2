@@ -6,7 +6,7 @@ import pprint
 
 ALPHAS = "abcdefghijklmnopqrstuvwxyz"
 MAX_LENGTH = 80
-MAX_KEY_LENGTH = 30
+MAX_KEY_LENGTH = 10
 MIN_WORD_HITS = 30
 TOP_CHAR_DEPTH = 10
 TOP_CHARS = "aehinorst" # all >6% 
