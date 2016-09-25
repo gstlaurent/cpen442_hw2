@@ -6,11 +6,19 @@ import pprint
 
 ALPHAS = "abcdefghijklmnopqrstuvwxyz"
 MAX_LENGTH = 80
-MAX_KEY_LENGTH = 12
-TOP_DEPTH = 5
-MIN_WORD_HITS = 3
+MAX_KEY_LENGTH = 30
+MIN_WORD_HITS = 30
+TOP_CHAR_DEPTH = 10
+TOP_CHARS = "aehinorst" # all >6% 
+MIN_TOP_CHAR = 5
 
-COMMON_WORDS = ['the', 'be', 'am', 'is', 'were', 'to', 'of', 'and', 'in', 'that', 'have']
+
+def load_words():
+    with open("./common_words.txt") as f:
+        words = f.read()
+        return words.splitlines()
+
+COMMON_WORDS = load_words()[:350] # they are in order of usage (500 total)
 
 cipher1 = "entehbitgqiesfkgzfgktlxwktubektbwktqerrffnubitnbekttnbtkbitkeerfgfaeswbtvtnbstrfnwggxaaegtubetnbtkfukfzwnvkeeruebitzfgktqtwctufbbitueekydfnebitkgqiesfkfnuqenuxqbtuhkerytnqibeytnqixnbwsitifuyttnwnbkeuxqtubefssbitdexnvsfuwtgfnuvtnbstrtnwnbitkeeruebswnqesnztnbbikexvibitekutfsqexnbstggbwrtguebwhitbeejfgtkwexgcwtzehbitatkhekrfnqtwbrxgbifctaxbiwrbetplxwgwbtbekbxktqerrfhekitzfgqengqwexgbifbitzfgnebfatkhtqbbdatehrfnsdytfxbd"
 
@@ -97,7 +105,7 @@ def freqlengths(cr, maxkeylen):
         print()
 
 
-class Freqeuncies():
+class Frequencies():
     def __init__(self, string):
         self.counts = Counter(string) # {letter: count}
         self.by_count = sorted(self.counts.items(), key=lambda lc: -lc[1])
@@ -115,9 +123,12 @@ class Freqeuncies():
             print("{l}{n:4}:{stars}".format(l=l, n=n, stars="*" * int(scale * n)))
 
 def is_candidate(string):
-    freq = Freqeuncies(string)
-    top5 = freq.top(TOP_DEPTH)
-    return "e" in top5 and ("a" in top5 or "t" in top5)
+    freq = Frequencies(string)
+    topN = freq.top(TOP_CHAR_DEPTH)
+    # return "e" in topN and "a" in topN and "t" in topN
+    # return "e" in topN and ("a" in topN or "t" in topN)
+    num_top = sum(1 for c in TOP_CHARS if c in topN)
+    return num_top >= MIN_TOP_CHAR
 
 
 def ceasearcycle(string):

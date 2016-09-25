@@ -40,5 +40,7 @@ def find_vignere_candidates_par(string):
 
 if __name__ == '__main__':
     cands = find_vignere_candidates_par(STRING)
+    print("Total candidates: ", len(cands))
     crypt.print_candidates(cands)
+    print("Total candidates: ", len(cands))
 
