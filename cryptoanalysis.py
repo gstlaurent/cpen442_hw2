@@ -6,8 +6,8 @@ import pprint
 
 ALPHAS = "abcdefghijklmnopqrstuvwxyz"
 MAX_LENGTH = 80
-MAX_KEY_LENGTH = 20
-TOP_DEPTH = 6
+MAX_KEY_LENGTH = 12
+TOP_DEPTH = 5
 MIN_WORD_HITS = 5
 
 COMMON_WORDS = ['be', 'am', 'is', 'were', 'to', 'of', 'and', 'in', 'that', 'have']
@@ -87,25 +87,6 @@ class Char():
             num = 26
         return Char(num=num)
 
-    # def shift(self, dist, keylen=1, keypos=0):
-
-# def rotations(cr, keylen):
-    # def top3(lcs): # [(letter, count)]
-        # lcs.sort(key=lambda lc: -lc[1])
-        # return lcs[:3]
-
-    # candidates = []
-    # for p in range(keylen):j
-        # for i in range(1,27):
-            # cc = cr.shift(i, keylen, p)
-            # print(str(cc)[:80])
-            # freqs = cc._frequencies()
-            # mosts = top3(freqs)
-            # topchars = "".join(l for l,_ in mosts)
-            # if "a" in topchars and "e" in topchars and "t" in topchars:
-                # candidates.append(cc)
-
-    # return candidates
 
 def freqlengths(cr, maxkeylen):
     for i in range(1, maxkeylen): 
@@ -174,15 +155,13 @@ def group_vignere(string):
     for ss in candidates:
         keylens[ss.keylen].append(ss)
 
+    # At least all but 1 of the candidates covers all positions
     narrow_candidates = {kl:sss for kl,sss in keylens.items() if num_pos(sss) >= kl - 1}
     return narrow_candidates
 
 def num_pos(sss):
     uniqe_pos = set(ss.pos for ss in sss)
     return len(uniqe_pos)
-
-#todo: from looking groups, see if, when combining them, they make good candidates
-
 
 def find_keylen_worlds(string):
     groups = group_vignere(string)
@@ -198,6 +177,7 @@ def find_keylen_worlds(string):
         worlds[keylen] = bypos
     return worlds
 
+# This is the first one that takes a long time
 def find_candidates(string):
     worlds = find_keylen_worlds(string)
     candidates = []
@@ -214,14 +194,14 @@ def find_candidates(string):
                 candidates.append((sslst, str(cr)))
     return candidates
 
-def print_candidates(candidates):
-    for sslist, string in candidates:
-        print("Key: '{}'".format(sss_to_key(sslist)))
-        print(string)
-        print()
-
-def sss_to_key(sslist):
-    return "".join(str(Char(num=ss.shift)) for ss in sslist)
+def cross_multiply(nested_lst, lst):
+    cross_lists = []
+    for l in nested_lst:
+        for e in lst:
+            lnew = l[:]
+            lnew.append(e)
+            cross_lists.append(lnew)
+    return cross_lists
 
 
 def narrow_by_words(candidates):
@@ -235,15 +215,6 @@ def narrow_by_words(candidates):
 def count_hits(string, words):
     return sum(string.count(w) for w in words)
 
-def cross_multiply(nested_lst, lst):
-    cross_lists = []
-    for l in nested_lst:
-        for e in lst:
-            lnew = l[:]
-            lnew.append(e)
-            cross_lists.append(lnew)
-    return cross_lists
-
 
 def find_vignere_candidates(string):
     cands = find_candidates(string)
@@ -251,15 +222,12 @@ def find_vignere_candidates(string):
     return cands
 
 
+def print_candidates(candidates):
+    for sslist, string in candidates:
+        print("Key: '{}'".format(sss_to_key(sslist)))
+        print(string)
+        print()
 
-
-
-
-
-
-
-
-
-
-
+def sss_to_key(sslist):
+    return "".join(str(Char(num=ss.shift)) for ss in sslist)
 
