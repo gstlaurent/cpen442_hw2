@@ -95,6 +95,9 @@ class Char():
             num = 26
         return Char(num=num)
 
+    def __sub__(self, o):
+        return self.shift_left(o.num)
+
 
 def freqlengths(cr, maxkeylen):
     for i in range(1, maxkeylen): 
@@ -124,11 +127,14 @@ class Frequencies():
 
 def is_candidate(string):
     freq = Frequencies(string)
-    topN = freq.top(TOP_CHAR_DEPTH)
+    topN = freq.top(1) # TOP_CHAR_DEPTH)
     # return "e" in topN and "a" in topN and "t" in topN
     # return "e" in topN and ("a" in topN or "t" in topN)
-    num_top = sum(1 for c in TOP_CHARS if c in topN)
-    return num_top >= MIN_TOP_CHAR
+    return "e" == topN
+
+
+    # num_top = sum(1 for c in TOP_CHARS if c in topN)
+    # return num_top >= MIN_TOP_CHAR
 
 
 def ceasearcycle(string):
@@ -235,10 +241,42 @@ def find_vignere_candidates(string):
 
 def print_candidates(candidates):
     for sslist, string in candidates:
-        print("Key: '{}'".format(sss_to_key(sslist)))
+        key = sss_to_key(sslist)
+        print("Key({n}): '{k}'".format(n=len(key), k=key))
         print(string)
         print()
 
 def sss_to_key(sslist):
     return "".join(str(Char(num=ss.shift)) for ss in sslist)
+
+
+
+# Candidate: ([ShiftStat], str)
+
+def vigenere_search(string, maxkeylen):
+    """Return {keylen: [ShiftStat]*keylen} where E is highest frequency for each position"""
+    e = Char('e')
+    candidates = []
+    for keylen in range(1, maxkeylen+1):
+        shiftstats = []
+        for pos in range(0, keylen):
+            select = string[pos::keylen]
+            freqs = Frequencies(select)
+            maxchar = Char(freqs.by_count[0][0])
+            ############ what about ties?
+            shift = (e - maxchar).num
+            shiftstats.append(ShiftStat(shift, keylen, pos))
+        candidates.append((shiftstats, apply_shiftstats(string, shiftstats)))
+    return candidates
+
+def apply_shiftstats(string, shiftstats):
+    cr = Cryptext(string)
+    for ss in shiftstats:
+        cr = cr.shift(*ss)
+    return str(cr)
+
+
+
+
+
 
