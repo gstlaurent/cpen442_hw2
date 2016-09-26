@@ -6,6 +6,8 @@ EXP2_32 = 4294967296
 def prove_not_strong():
   hashes = {}
   for i in range(EXP2_32):
+    if i % 1000000 == 0:
+      print(i)
     opt = pycrc.Options()
     s = str(i)
     opts = options + [s]
