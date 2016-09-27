@@ -12,6 +12,12 @@ TOP_CHAR_DEPTH = 10
 TOP_CHARS = "aehinorst" # all >6% 
 MIN_TOP_CHAR = 5
 
+FREQS = {"a": .082, "b": .015, "c": .028, "d": .043, "e": .127, "f": .022,
+         "g": .020, "h": .061, "i": .070, "j": .002, "k": .008, "l": .040,
+         "m": .024, "n": .067, "o": .075, "p": .019, "q": .001, "r": .060,
+         "s": .063, "t": .091, "u": .028, "v": .010, "w": .024, "x": .002,
+         "y": .020, "z": .001}
+
 
 def load_words():
     with open("./common_words.txt") as f:
@@ -62,11 +68,34 @@ class Cryptext():
         newstring = "".join(newchar(c) for c in self.chars)
         return Cryptext(newstring)
 
+    def s(self, l1, l2):
+        return self.swap(l1, l2)
+    def f(self):
+        self.frequencies()
+
+
     def map(self, fun):
         cr = Cryptext(str(self))
         cr.chars = [fun(c) for c in cr.chars]
         return cr
 
+    def frequencies(self):
+        f = Frequencies(str(self))
+        f.show()
+
+    def sort(self):
+        freqs = sorted(FREQS.items(), key=lambda lf: -lf[1])
+        f = Frequencies(str(self))
+        act_exp = zip(f.by_count, freqs)
+        print(list(act_exp))
+
+        act_exp = zip(f.by_count, freqs)
+        cr = Cryptext(str(self))
+        for la_le in act_exp:
+            cipherletter = la_le[0][0]
+            freqletter = la_le[1][0]
+            cr = cr.swap(cipherletter, freqletter)
+        return cr
 
 
 class Char():
@@ -279,4 +308,10 @@ def apply_shiftstats(string, shiftstats):
 
 
 
+# cr.s("t", "e").s("b", "a").s("o", "f").s("n", "i").s("k", "n").s("k", "s").s("g", "h").s("f", "z").s("m", "q").s("p", "x")
+# cr.s("t", "e").s("b", "a").s("o", "f").s("n", "i").s("k", "n").s("k", "s").s("g", "h").s("f", "z").s("m", "q").s("p", "x").s("e", "o").s("o", "m").s("i", "y").f()
+# cr.s("t", "e").s("b", "a").s("o", "f").s("n", "i").s("k", "n").s("k", "s").s("g", "h").s("f", "z").s("m", "q").s("p", "x").s("r", "w").s("m", "d")
+# cr.s("t", "e").s("b", "a").s("o", "f").s("n", "i").s("k", "n").s("k", "s").s("g", "h").s("f", "z").s("m", "q").s("p", "x").s("r", "w").s("m", "d").s("l", "p").s("c", "w").s("k", "w")
 
+
+# cr.s("t", "e").s("b", "a").s("o", "f").s("n", "i").s("k", "n").s("k", "s").s("g", "h").s("f", "z").s("m", "q").s("p", "x").s("r", "w").s("m", "d").s("l", "p").s("c", "w").s("k", "w").s("u", "d").s("u", "l").s("m", "f").s("f", "b").s("m", "g").s("p", "b").s("b", "v").s("v", "k").f()
