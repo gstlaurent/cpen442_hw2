@@ -27,7 +27,6 @@ def load_words():
 COMMON_WORDS = load_words()[:350] # they are in order of usage (500 total)
 
 plaintext1 = "oneofthescholarswasrequiredtoretirecommaandthentoreentertheroomasapolitegentlemanissupposedtoenteradrawingroomdothewasreceivedatthedoorbyanotherscholarandconductedfrombenchtobenchuntilhehadbeenintroducedtoalltheyoungladiesandgentlemenintheroomdotlincolnwentthroughtheordealcountlesstimesdotifhetookaseriousviewoftheperformanceitmusthaveputhimtoexquisitetorturecommaforhewasconsciousthathewasnotaperfecttypeofmanlybeauty"
-
 cipher1    = "entehbitgqiesfkgzfgktlxwktubektbwktqerrffnubitnbekttnbtkbitkeerfgfaeswbtvtnbstrfnwggxaaegtubetnbtkfukfzwnvkeeruebitzfgktqtwctufbbitueekydfnebitkgqiesfkfnuqenuxqbtuhkerytnqibeytnqixnbwsitifuyttnwnbkeuxqtubefssbitdexnvsfuwtgfnuvtnbstrtnwnbitkeeruebswnqesnztnbbikexvibitekutfsqexnbstggbwrtguebwhitbeejfgtkwexgcwtzehbitatkhekrfnqtwbrxgbifctaxbiwrbetplxwgwbtbekbxktqerrfhekitzfgqengqwexgbifbitzfgnebfatkhtqbbdatehrfnsdytfxbd"
 
 
@@ -35,7 +34,8 @@ cipher1    = "entehbitgqiesfkgzfgktlxwktubektbwktqerrffnubitnbekttnbtkbitkeerfgf
 
 # permutation substitution cipher
 # ALPHAS = "abcdefghijklmnopqrstuvwxyz"
-# key      "fequthviwmjsrnealkgbxczpd"
+# key      "fequthviw ksrnealkgbxczpd "
+# m,o missing
 
 
 
