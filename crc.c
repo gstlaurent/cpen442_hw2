@@ -45,9 +45,146 @@ unsigned int crc32c(unsigned char *message) {
 ///////////////////////////////////////////////////////////////////////////////
 // Now, my actual stuff.
 
-int main(int argc, char* argv[]) {
-  unsigned int hash = crc32c("graham");
-  printf("0x%x\n", hash);
-  return 0;
+#include <limits.h>
+
+#define MAX 0x100000000
+#define MY_MD5 "e52fa762878387af285e6e54398b2ce4"
+#define MY_STRING "graham"
+#define NTHREADS 3
+
+typedef struct {
+  unsigned long long start;
+  unsigned long long end;
+  int thread;
+  unsigned int to_match;
+  unsigned char *my_string;
+} Args;
+
+
+
+
+void *crc_match(void *args) {
+  Args a = *((Args*) args);
+
+  unsigned char found_string[33];
+  printf("Thread %d: Searching for matches between '%llx' and '%llx'\n",
+      a.thread, a.start, a.end);
+
+  unsigned long long i;
+  for (i = a.start; i < a.end; i++) {
+    if (i % 0x1000000 == 0) { // 2^24
+      printf("Thread %d: %llx\n", a.thread, i);
+    }
+
+    snprintf(found_string, 8, "%llx", i);
+    unsigned int test_hash = crc32c(found_string);
+
+    if (test_hash == a.to_match) {
+      printf("Thread %d: Match found! ----- test string crc32('%s') == found string crc32('%s') == 0x%x\n",
+          a.thread, a.my_string, found_string, a.to_match);
+      return NULL;
+    }
+  }
+
+  printf("Thread %d: No match found between '%llx' and '%llx'\n",
+      a.thread, a.start, a.end);
+
+  return NULL;
 }
 
+void parallel_search(void) {
+  unsigned char *my_string;
+  
+  // Problem 3 and problem 4
+  my_string = MY_MD5;     // Problem 4
+  my_string = MY_STRING;  // Problem 3
+
+  unsigned int my_hash = crc32c(my_string);
+  printf("Searching for hash: 0x%x\n", my_hash);
+
+  pthread_t threads[NTHREADS];
+  Args thread_args[NTHREADS];
+  unsigned long long chunksize = ULONG_MAX/NTHREADS;
+
+  int rc, i;
+
+  /* spawn the threads */
+  for (i=0; i<NTHREADS; ++i)
+    {
+      Args *a = &thread_args[i];
+      a->start = chunksize * i;
+      a->end = a->start + chunksize;
+      a->thread = i;
+      a->to_match = my_hash;
+      a->my_string = my_string;
+
+      printf("spawning thread %d\n", i);
+      rc = pthread_create(&threads[i], NULL, crc_match, (void *) &thread_args[i]);
+    }
+
+  /* wait for threads to finish */
+  for (i=0; i<NTHREADS; ++i) {
+    rc = pthread_join(threads[i], NULL);
+  }
+}
+
+void sequential_search(void) {
+  unsigned char *my_string;
+  
+  // Problem 3 and problem 4
+  my_string = MY_MD5;     // Problem 4
+  /*my_string = MY_STRING;  // Problem 3*/
+  
+  ///////////////////////////////////////////////////
+  unsigned int my_hash = crc32c(my_string);
+  printf("Searching for hash: 0x%x\n", my_hash);
+
+  unsigned char found_string[9];
+
+  unsigned long i;
+  for (i=0; i<MAX; i++) {
+    if (i % 1000000 == 0) {
+      printf("%lu\n", i);
+    }
+
+    snprintf(found_string, 8, "%lx", i);
+    unsigned int h = crc32c( found_string);
+
+    if (h == my_hash) {
+      printf("Match found!\ncrc32('%s') == crc32('%s') == 0x%x\n",
+          my_string, found_string, h);
+      return;
+    }
+  }
+
+  puts("Error! No match found!");
+}
+
+
+
+int main(int argc, char* argv[]) {
+  sequential_search();
+  /*parallel_search();*/
+}
+
+
+
+/*
+Problem 3
+(350569284, ('14740600', '86821'))
+
+real    1011m17.217s
+user    1007m1.448s
+sys     4m15.552s
+*/
+
+
+/*
+Match found!
+Problem 4
+crc32('e52fa762878387af285e6e54398b2ce4') == crc32('119e668') == 0x7d6fc89f
+
+real    0m2.129s
+user    0m2.128s
+sys     0m0.000s
+*/
