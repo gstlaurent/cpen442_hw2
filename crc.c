@@ -96,8 +96,8 @@ void parallel_search(void) {
   unsigned char *my_string;
   
   // Problem 3 and problem 4
-  my_string = MY_MD5;     // Problem 4
   my_string = MY_STRING;  // Problem 3
+  my_string = MY_MD5;     // Problem 4
 
   unsigned int my_hash = crc32c(my_string);
   printf("Searching for hash: 0x%x\n", my_hash);
@@ -163,8 +163,8 @@ void sequential_search(void) {
 
 
 int main(int argc, char* argv[]) {
-  sequential_search();
-  /*parallel_search();*/
+  /*sequential_search();*/
+  parallel_search();
 }
 
 
