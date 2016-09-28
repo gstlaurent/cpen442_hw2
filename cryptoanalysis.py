@@ -73,6 +73,12 @@ class Cryptext():
     def f(self):
         self.frequencies()
 
+    def uppers(self, *letters):
+        nums = [ord(l) - 96 for l in letters]
+        for c in self.chars:
+            if c.num in nums:
+                c.num -= 32 # make uppercase
+        return self
 
     def map(self, fun):
         cr = Cryptext(str(self))
@@ -101,7 +107,6 @@ class Cryptext():
 class Char():
     def __init__(self, letter=None, num=None):
         if letter:
-            letter = letter.lower()
             self.num = ord(letter) - 96
         elif num:
             self.num = num
@@ -139,6 +144,7 @@ def freqlengths(cr, maxkeylen):
 
 class Frequencies():
     def __init__(self, string):
+        string = string.lower()
         self.counts = Counter(string) # {letter: count}
         self.by_count = sorted(self.counts.items(), key=lambda lc: -lc[1])
 
@@ -306,6 +312,38 @@ def apply_shiftstats(string, shiftstats):
 
 
 
+def triples(string):
+    """Return all consecutive three characters, sorted from most comom to least
+    ((chars), #occurences))
+    """
+    iter1 = iter(string)
+    iter2 = iter(string)
+    iter3 = iter(string)
+    next(iter2)
+    next(iter3)
+    next(iter3)
+    trips = zip(iter1, iter2, iter3)
+    return list(trips)
+
+def sort_trips(trips):
+    trip_counts = Counter(trips)
+    trip_counts = sorted(trip_counts.items(), key=lambda tc: tc[1])
+    return trip_counts
+
+def digraphs(string):
+    iter1 = iter(string)
+    iter2 = iter(string)
+    next(iter2)
+    pairs = zip(iter1, iter2)
+    return list(pairs)
+
+def sort_digraphs(dups):
+    counts = Counter(dups)
+    counts = sorted(counts.items(), key=lambda dc: dc[1])
+    return counts
+
+
+
 
 
 # cr.s("t", "e").s("b", "a").s("o", "f").s("n", "i").s("k", "n").s("k", "s").s("g", "h").s("f", "z").s("m", "q").s("p", "x")
@@ -315,3 +353,9 @@ def apply_shiftstats(string, shiftstats):
 
 
 # cr.s("t", "e").s("b", "a").s("o", "f").s("n", "i").s("k", "n").s("k", "s").s("g", "h").s("f", "z").s("m", "q").s("p", "x").s("r", "w").s("m", "d").s("l", "p").s("c", "w").s("k", "w").s("u", "d").s("u", "l").s("m", "f").s("f", "b").s("m", "g").s("p", "b").s("b", "v").s("v", "k").f()
+
+
+#cr.swap("b", "t").swap("b", "e").swap("i", "h").swap("n", "a").swap("k", "o")
+
+# PROGRESS, 'A' might be wrong
+# cr.swap("b", "t").swap("b", "e").swap("i", "h").uppers("t", "e", "h").swap("b", "o").uppers('o').uppers('n').swap("i", "f").uppers("f").swap("k", "r").swap("k", "m").uppers("r", "m").swap("i", "a").uppers("a")
