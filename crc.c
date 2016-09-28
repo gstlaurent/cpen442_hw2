@@ -50,6 +50,8 @@ unsigned int crc32c(unsigned char *message) {
 #define MAX 0x100000000
 #define MY_MD5 "e52fa762878387af285e6e54398b2ce4"
 #define MY_STRING "graham"
+/*#define MY_STRING "6b30848d3ce5ec0a20ffd42fafe8c426"*/
+/*#define MY_STRING "32C50D9D70F24B54C9A004864F103B49"*/
 #define NTHREADS 3
 
 typedef struct {
@@ -96,8 +98,8 @@ void parallel_search(void) {
   unsigned char *my_string;
   
   // Problem 3 and problem 4
-  my_string = MY_STRING;  // Problem 3
   my_string = MY_MD5;     // Problem 4
+  my_string = MY_STRING;  // Problem 3
 
   unsigned int my_hash = crc32c(my_string);
   printf("Searching for hash: 0x%x\n", my_hash);
@@ -133,7 +135,7 @@ void sequential_search(void) {
   
   // Problem 3 and problem 4
   my_string = MY_MD5;     // Problem 4
-  /*my_string = MY_STRING;  // Problem 3*/
+  my_string = MY_STRING;  // Problem 3
   
   ///////////////////////////////////////////////////
   unsigned int my_hash = crc32c(my_string);
@@ -160,11 +162,36 @@ void sequential_search(void) {
   puts("Error! No match found!");
 }
 
+unsigned int hashes[UINT_MAX];
 
+void table_search(void) {
+  unsigned char string[9];
+
+  int i;
+
+  for (i=0; i< UINT_MAX; i++) {
+    if (i % 1000000 == 0) {
+      printf("%u\n", i);
+    }
+    
+    snprintf(string, 8, "%x", i);
+    unsigned int h = crc32c(string);
+
+    if (hashes[h]) {
+      printf("Match found!\ncrc32('%x') == crc32('%s') == 0x%x\n",
+          hashes[h], string, h);
+      return;
+    } else {
+      hashes[h] = i;
+    }
+  }
+  puts("Error! No match found!");
+}
 
 int main(int argc, char* argv[]) {
   /*sequential_search();*/
-  parallel_search();
+  /*parallel_search();*/
+  table_search();
 }
 
 
