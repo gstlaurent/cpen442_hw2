@@ -197,14 +197,13 @@ int main(int argc, char* argv[]) {
 
 
 /*
-Problem 3
-(350569284, ('14740600', '86821'))
+Match found!
+crc32('7b8dcc') == crc32('2004800') == 0xab6509af
 
-real    1011m17.217s
-user    1007m1.448s
-sys     4m15.552s
+real    0m10.180s
+user    0m7.036s
+sys     0m3.144s
 */
-
 
 /*
 Match found!
