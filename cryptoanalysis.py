@@ -376,20 +376,38 @@ def clean(string):
 with open("dickens.txt") as f:
     dickens = list(clean(f.read()))
 
-def codestring(string):
+
+
+def commadot(string):
     res = []
     for c in string:
         if c == ".":
             res += ["d", "o", "t"]
         elif c == ",":
             res += ["c", "o", "m", "m", "a"]
-        elif c == " ":
-            continue
         else:
             res.append(c)
     return "".join(res)
 
-dickenscode = codestring(dickens)
+def remove_doubles_and_js(string):
+    """insert x's and replace j's with i's"""
+    string = string.replace("j", "i")
+    string = string.replace(" ", "")
+
+    res = []
+    iter1 = iter(string)
+    iter2 = iter(string)
+    next(iter2)
+    for c1, c2 in zip(iter1, iter2):
+        if c1 != c2:
+            res.append(c1)
+        else:
+            res += [c1, "x"]
+    return "".join(res)
+
+
+dickenscode =  remove_doubles_and_js(commadot(dickens))
+
 
 def justletters(string):
     res = []
