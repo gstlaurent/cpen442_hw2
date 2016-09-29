@@ -417,9 +417,38 @@
 
 \section{Problem \#2}
 \begin{itemize}
-  \item Cipher: 
-  \item Key: 
-  \item 
+  \item Cipher: Playfair 
+  \item Key: ??? 
+  \item There were two clues that it was playfair: there was no \textit(j), and
+    there were an ever number of letters. Just to be sure, I ran frequency
+    analysis and a simple vigenere searcher that I'd made, and neither of them
+    turned up promising results.
+
+    After grouping the letters in digraphs, my approach so far has been
+    mostly frequency analysis. I analyzed the Playfair digraph frequencies
+    in three books I found online (\textit{Jane Eyre}, \textit{A Tale of Two
+      Cities}, and a Sherlock Holmes story), and used them as a basis for
+    comparison. I looked not just a digraph frequencies, but also pairs of
+    digraphs, and triples of digraphs. I tried both by replacing commas and periods with
+    \verb|COMMA| and \verb|DOT| and without doing that, and I found that
+    \emph{with} the spelled-out punctuation, the frequency proportions lined up
+    more closely. 
+
+    Unfortunately, the similarities somewhat ended there. The three books
+    were very consistent in their frequencies, especially of triples, but there
+    was no way I could get my frequencies to match, especially if I wanted the
+    most common digraph, \verb|TH|, to be one of the most frequent. Also, they
+    all agreed that \verb|CO MX MA| is the most frequent triple by a long shot,
+    but setting setting that up in my cipher lead to a situation that was impossible.
+    I tried to determine what key would be necessary to allow it. Only a made up
+    word would work (which, I suppose, is an option). No real word with fit in the
+    5*5 square with the required properties.
+
+    Anyway, since I didn't solve it, here it is with just that one substitution,
+    arrange into digraphs:
+
+    \textit{QT SE OK TF GA CU ET DU KC DU UM RP UL WT DE DQ ME YK WT CO MX MA DY QT BF AY MK YF AC BU EO XO CE HU CU AZ GT LE OV UC XO CU CA YT MA PO QF CD VD EQ EQ YK FT AN EK MD UM RP UP MF CA ID UE YH EK CE TG OF UL WT DE DQ ME YK WT CE UA MF CA ID UE CO MX MA TO CE TG TO CY DU RT DQ MA DI TO HC TK UH AN EK MD UM RP UP UM TF KR PG KT OK TE UE MC EL QC BR CO MX MA LU CE OE ET ED OY OF OX GA CU FZ MP ZS UE SZ TC DT DQ MA OF OC EK CE TA BE EC OT CN YT UG KI QK FG OC TY BR VD GN ET PT DU UM UL UK EO FK YC RT DQ MA OF AM UK LH CA YT UL WT CO MX MA ET UC KP FU BP HI MH DQ MA ME OF TO QS UL WT DE DQ ME YK WT CO MX MA QT SA OT FV XO ET UK RU QE QF OE TO TC EK EQ LX IQ HU CE OE EL RP UL WT QF TV NE EK CG DQ MA TK FG AG MR DQ MA LU OE EL WT CE OE QT YA BE EC YT ET DU TO GT CO MX MA OF OC ET XO FU VD YT EG DQ MA CE OE LU FQ GT CO MX MA UK RU CE TE KY CT RP RK TY VD UL WT TO TG DQ MA XM VD CE DU UM UK XO EK MD UM BH TC UY XH DQ MA OF CX OA HU NA YC ET FL OF DT DQ MA FZ CE CE GU UE ZQ WT GE CF CU QF HU YK AE HT FT YD YU ZQ XO CA MA XP TK LU FI YH VU AY CN YT EZ AG YK IC YV OR YK IC CE QF CV TY OT XG DQ MA UL IH XT TG DQ MA KP UE UH CO MX MA GA CU RS DV RU OU YH ET TK YH HU RH DQ MA EY YX QF CB AY XO XM VD CE DU UM UL BH AQ WT YT UL WT DE DQ ME YK WT KT CO MX MA TK FZ KQ QS CE TU IR XD YB OF OC ET ST YB BR QF XU DQ CE TG TO UH BD OE DY RT DQ MA OF CR DQ UI FN YD QC ET YH EF BU CO MX MA OF VC DO XO AU CG ET DE TK CE CU XU DQ KI QK AG YC ET TK YU TG DQ MA OF CR YD XV QF YT CE CA UD FZ WT YD DQ CO MX MA OF KR QE YD YF CR DQ MA KI PL ZQ SD QF EZ FO OY ME LF OE QA XO TY CE TF EK MD UM US TH QF RK TY FG MP MH DQ MA QT RA TO HQ DN DA NA XD RE TK AE KD ME UF FO CO ZQ HR TO CV TY QT RA TO CT WF TG CG DY UC GC KS UD UL WT DY KD ED IQ IV EQ TO VD YQ AY VD OY ZQ XO FA DI OF VD HU AF XO AY CG DQ MA PG TF QF CE CI ID KM TA AE OT CT CO MX MA CE OE ET LU YT KT ZE EG DQ MA OF CR DQ HU VD PX FZ CE EF CU AV TY QT RA TO GY TY ET UD YV YE EQ IC VD YQ AY VD OY ZQ XO DI OF UG QF HC NV UV BU QF XU TO YT NE ET DE CO LX OF QZ TF CG DQ MA OF AC KU QF EB FL OY ET ZQ CD KM TA AE IQ FT YT DU EB UF YT YE FZ CE CE HF FE FQ YH CO MX MA OF OC ET PY EO YC QF HC ET AG BU UE XU HU CK TY SY YQ AY VD CF FH GC CE GF DY KR VD YQ AY VD OY CF FH GC DI OF YT FT AG MD UC IC ZR CU QD UC CE OF CE UA MU YH CE UC HI QF HU AN CE UA MU YH AG BU TG DQ MA OF OC DA CF HF TO UC FH OE QF HC ET UH YF EQ IQ EQ YH QZ TC VY TH QF CE TG TK BY RK TY QT RA TO CT WF TG EO MA OY VY UC OA AN AF OY ET ZQ CD KM TA AE IQ FT CO MX MA OF KR FQ CW HT MR DQ MA OF KR OU CO MX MA QE BK CU UN YF OQ CO MX MA SY CE HU SZ HU EQ PE TG OF CE QF AD NE ET UC YH AN QE CO MX MA OF OC ET OY BR OF CX OA UF EY FN DY EL LR HI XE DQ MA OF CR DQ MA EA CT BX DU KR CO MX MA UY CD AC PQ RB TG KQ IH GC QE CO MX MA PG TF ET EK BH TY YT OF TF EQ UC QS AM NW AU UC OY FK YC AN CE HU TO HG DQ MA OF VR UC OA AN XE DQ MA FZ CE AY EO NV MC AN FV YX QF HG DQ MA YT TV UV HD OF KM TC QT SE OK UF CN CE TF OF OC ET UC VD YQ AY VD OY FG MP MH DQ MA ZF QI IQ YU CH ZA TU AY OF ID UE AN EK MD UM RP RH DQ ME UL WT QF HG DQ MA OF OC ET OQ AY ED FQ RA HT AN QE NA BR AY BU HI XA TY FL GC YB TE DU UM LS DU UM RK TY YH OF AM WT SF QF XU TO YT NF FE OT OF VO CD CM HU UL WT CE CF CF FH GC OF CQ VY VD EQ MA XU EF AM HY OK CU QT MK CE QF HG DQ MA QT SA OT XV TY FU WF TG YQ AY KI PH OT FZ CG DQ MA QT SA OT XV TY SY EQ HY CE TA PQ QY EL WT LA OT XV TY QE YH ET FI VC HU YK WT AY YT NF QF EA DY TF DT DQ MA ID TO CQ UE XF QF EA DY UF IC OF QT SA OT PW PG OE QZ UE OY ET TY ET YC EL WT CO MX MA QT SA OT XV TY QT RI YU EO MP IQ AQ FQ OY ET GE DY YU CO MX MA QT SA OT XV TY IR XD YB YK XA HI ZE EC OF VO XW FU YQ YT QA QF QF CE TG TK BY RK TY SB QI IQ OF HN CU NA XD OF GT AN XS HI RA TC TY ET FI VC HU YK WT QF CY FE ZS UQ YB RS QO CU KD YU FL OF LU TD TY QD IC OY DU UM AG UP DY EK MD UM YH AQ AQ FQ XO TY EK MD UM YH OA HU OT OT EQ GT AN QE VD YO CU KD YU FL OF LU CG DQ IC XT HU XS HI RA TA AG UD EV QF CO MX MA OF KC DU UM RH DQ MA CO MX IC XT QF HB QF EZ WT OE CE HU DI TC QZ TG DQ MA VO LS HU AN NE ET AF BU CN GN KQ QF HU AN CE UA MU YH QK MC RP YK WT AY YT NF QF EA DY CF}
+
 \end{itemize}
 
 

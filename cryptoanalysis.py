@@ -367,6 +367,19 @@ class Playfair():
         self.size = len(string)
         self._replacements = []
 
+    def fours(self):
+        fs = digraphs(self.digraphs)
+        fs = [str(a1) + str(a2) + " " + str(b1) + str(b2) for ((a1, a2), (b1, b2)) in fs]
+        sfs = sort_digraphs(fs)
+        return sfs
+
+    def sixes(self):
+        ss = triples(self.digraphs)
+        ss = [str(a1) + str(a2) + " " + str(b1) + str(b2) + " " + str(c1) + str(c2) for ((a1, a2), (b1, b2), (c1, c2)) in ss]
+        sfs = sort_digraphs(ss)
+        return sfs
+
+
     def frequencies(self): # percents
         ds = sort_digraphs(self.digraphs)
         frequencies = self.digraph_percents(ds)
@@ -475,11 +488,16 @@ with open("dickens.txt") as f:
 with open("holmes.txt") as f:
     holmes = list(clean(f.read()))
 
+with open("eyre.txt") as f:
+    eyre = list(clean(f.read()))
+
 dickenscode = remove_doubles_and_js(commadot(dickens))
 holmescode = remove_doubles_and_js(commadot(holmes))
+eyrecode = remove_doubles_and_js(commadot(eyre))
 
 dickens_playfair = Playfair(dickenscode)
-holmes_playfair = Playfair(dickenscode)
+holmes_playfair = Playfair(holmescode)
+eyre_playfair = Playfair(eyrecode)
 
 pf = Playfair(cipher2)
 
