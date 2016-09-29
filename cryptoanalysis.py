@@ -124,10 +124,10 @@ class Char():
         else:
             assert(False)
 
-    # def __eq__(self, o):
-        # return self.num == o.num
-    # def __hash__(self):
-        # return self.num
+    def __eq__(self, o):
+        return self.num == o.num
+    def __hash__(self):
+        return self.num
 
     def __repr__(self):
         return "Char({c}, {n})".format(c=str(self), n=self.num) 
@@ -353,7 +353,50 @@ def sort_digraphs(dups):
     counts = sorted(counts.items(), key=lambda dc: dc[1])
     return counts
 
+def digraph_percents(string, sorted_digraph_counts):
+    return [(x[0], (x[1]/(len(string)/2) * 100)) for x in sorted_digraph_counts]
 
+class Playfair():
+    def __init__(self, string):
+        digraphs = list(map(''.join, zip(*[iter(string)]*2))) # from http://stackoverflow.com/questions/9475241/
+        self.digraphs = [(Char(c1), Char(c2)) for c1,c2 in digraphs]
+        ds = sort_digraphs(self.digraphs)
+        self._frequencies = digraph_percents(string, ds)
+
+    def frequencies(self): # percents
+        return [("{a}{b}".format(a=str(a), b=str(b)), "{:.3}".format(p)) for (a,b), p in self._frequencies]
+
+def clean(string):
+    for c in string:
+        if c == "\n":
+            yield " "
+        elif c.isalpha() or c == "." or c == "," or c == " ":
+            yield c.lower()
+
+with open("dickens.txt") as f:
+    dickens = list(clean(f.read()))
+
+def codestring(string):
+    res = []
+    for c in string:
+        if c == ".":
+            res += ["d", "o", "t"]
+        elif c == ",":
+            res += ["c", "o", "m", "m", "a"]
+        elif c == " ":
+            continue
+        else:
+            res.append(c)
+    return "".join(res)
+
+dickenscode = codestring(dickens)
+
+def justletters(string):
+    res = []
+    for c in string:
+        if c.isalpha():
+            res.append(c)
+    return "".join(res)
 
 
 
