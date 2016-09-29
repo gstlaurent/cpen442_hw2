@@ -409,7 +409,16 @@ class Playfair():
         return pf
 
     def r(self, po, pn):
-        return self.replace(po, pn)
+
+        por = list(po)
+        por.reverse()
+        por = "".join(por)
+
+        pnr = list(pn)
+        pnr.reverse()
+        pnr = "".join(pnr)
+
+        return self.replace(po, pn).replace(por, pnr)
 
     def replace(self, pair_old, pair_new):
         pf = self.copy()
@@ -429,7 +438,7 @@ class Playfair():
 
         pf.digraphs = ds
         pf._replacements.append(Replacement(dold, dnew))
-        pf = pf.uppers(pair_new)
+        pf = pf.uppers(pair_new).uppers(pair_old)
         return pf
 
     def replacements(self):
@@ -437,6 +446,11 @@ class Playfair():
             old = str(r.old[0]) + str(r.old[1])
             new = str(r.new[0]) + str(r.new[1])
             print(old, "->", new)
+
+    def doubles(self):
+        pairs = digraphs(self.digraphs)
+        return [((a1,a2), (b1,b2)) for ((a1,a2), (b1,b2)) in pairs if a1 == b2 and a2 == b1]
+
 
 
 
