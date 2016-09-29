@@ -1,6 +1,8 @@
 from collections import Counter, namedtuple, defaultdict
 from itertools import groupby
 import pprint
+import copy
+
 
 # everything uses lowercase
 
@@ -123,6 +125,9 @@ class Char():
             self.num = num
         else:
             assert(False)
+
+    def upper(self):
+        self.num -= 32
 
     def __eq__(self, o):
         return self.num == o.num
@@ -353,18 +358,80 @@ def sort_digraphs(dups):
     counts = sorted(counts.items(), key=lambda dc: dc[1])
     return counts
 
-def digraph_percents(string, sorted_digraph_counts):
-    return [(x[0], (x[1]/(len(string)/2) * 100)) for x in sorted_digraph_counts]
+Replacement = namedtuple("Replacement", ["old", "new"])
 
 class Playfair():
     def __init__(self, string):
         digraphs = list(map(''.join, zip(*[iter(string)]*2))) # from http://stackoverflow.com/questions/9475241/
         self.digraphs = [(Char(c1), Char(c2)) for c1,c2 in digraphs]
-        ds = sort_digraphs(self.digraphs)
-        self._frequencies = digraph_percents(string, ds)
+        self.size = len(string)
+        self._replacements = []
 
     def frequencies(self): # percents
-        return [("{a}{b}".format(a=str(a), b=str(b)), "{:.3}".format(p)) for (a,b), p in self._frequencies]
+        ds = sort_digraphs(self.digraphs)
+        frequencies = self.digraph_percents(ds)
+        return [("{a}{b}".format(a=str(a), b=str(b)), "{:.3}".format(p)) for (a,b), p in frequencies]
+
+    def digraph_percents(self, sorted_digraph_counts):
+        return [(x[0], (x[1]/(self.size/2) * 100)) for x in sorted_digraph_counts]
+
+    def __repr__(self):
+        pairs = [str(c1) + str(c2) for c1, c2 in self.digraphs]
+        return "Playfair({pairs})".format(pairs=" ".join(pairs))
+
+    def __str__(self):
+        return "".join(str(c1) + str(c2) for c1, c2 in self.digraphs)
+
+    def copy(self):
+        return copy.deepcopy(self)
+
+    def uppers(self, pair):
+        pf = self.copy()
+
+        d = digraph(pair)
+        for c1, c2 in pf.digraphs:
+            if (c1,c2) == d:
+                c1.upper()
+                c2.upper()
+        return pf
+
+    def r(self, po, pn):
+        return self.replace(po, pn)
+
+    def replace(self, pair_old, pair_new):
+        pf = self.copy()
+        dold = digraph(pair_old)
+        dOLD = digraph(pair_old.upper())
+        dnew = digraph(pair_new)
+        dNEW = digraph(pair_new.upper())
+
+        ds = []
+        for d in self.digraphs:
+            if d == dold or d == dOLD:
+                ds.append(dnew)
+            elif d == dnew or d == dNEW:
+                ds.append(dold)
+            else:
+                ds.append(d)
+
+        pf.digraphs = ds
+        pf._replacements.append(Replacement(dold, dnew))
+        pf = pf.uppers(pair_new)
+        return pf
+
+    def replacements(self):
+        for r in self._replacements:
+            old = str(r.old[0]) + str(r.old[1])
+            new = str(r.new[0]) + str(r.new[1])
+            print(old, "->", new)
+
+
+
+
+def digraph(pair):
+    return (Char(pair[0]), Char(pair[1]))
+
+
 
 def clean(string):
     for c in string:
@@ -372,9 +439,6 @@ def clean(string):
             yield " "
         elif c.isalpha() or c == "." or c == "," or c == " ":
             yield c.lower()
-
-with open("dickens.txt") as f:
-    dickens = list(clean(f.read()))
 
 
 
@@ -405,9 +469,19 @@ def remove_doubles_and_js(string):
             res += [c1, "x"]
     return "".join(res)
 
+with open("dickens.txt") as f:
+    dickens = list(clean(f.read()))
 
-dickenscode =  remove_doubles_and_js(commadot(dickens))
+with open("holmes.txt") as f:
+    holmes = list(clean(f.read()))
 
+dickenscode = remove_doubles_and_js(commadot(dickens))
+holmescode = remove_doubles_and_js(commadot(holmes))
+
+dickens_playfair = Playfair(dickenscode)
+holmes_playfair = Playfair(dickenscode)
+
+pf = Playfair(cipher2)
 
 def justletters(string):
     res = []
@@ -433,3 +507,11 @@ def justletters(string):
 # cr.swap("b", "t").swap("b", "e").swap("i", "h").uppers("t", "e", "h").swap("b", "o").uppers('o').uppers('n').swap("i", "f").uppers("f").swap("k", "r").swap("k", "m").uppers("r", "m").swap("i", "a").uppers("a")
 
 # cr.swap("b", "t").swap("b", "e").swap("i", "h").uppers("t", "e", "h").swap("b", "o").uppers('o').uppers('n').swap("i", "f").uppers("f").swap("k", "r").swap("k", "m").uppers("r", "m").swap("i", "a").uppers("a").swap("w", "i").uppers("i").swap("u", "d").uppers("d").swap("x", "u").swap("q", "c").uppers("c", "u").swap("l", "q").uppers("q").swap("l", "v").uppers("v").swap("y", "b").swap("s", "l").uppers("b", "l").swap("g", "s").uppers("s").swap("z", "w").uppers("w").swap("x", "y").uppers("y", "g").swap("z", "p").uppers("p").swap("j", "k").swap("z", "x").uppers("k", "x")
+
+
+
+################################################################################
+#********************************************************************************
+
+#crypt.pf.replace("id", "th").replace("dq", "he").replace("of", "ma").replace("ce", "om").replace("qf", "co").replace("et", "mx").replace("wt", "xm")
+# crypt.pf.r("dq", "co").r("id", "mx").r("of", "ma")
